@@ -91,12 +91,12 @@ class AirmxPlatform implements DynamicPlatformPlugin {
     })
 
     this.airmx.onEagleUpdate((status) => {
-      this.log.info('Receive a status update from device:', status.deviceId)
+      this.log.debug('Receive a status update from device:', status.deviceId)
 
       const uuid = this.api.hap.uuid.generate(status.deviceId.toString())
       const accessory = this.accessories.get(uuid)
       if (accessory) {
-        this.log.info('Update the current status to device:', status.deviceId)
+        this.log.debug('Update the current status to device:', status.deviceId)
         accessory.context.status = {
           power: status.power,
           mode: status.mode,

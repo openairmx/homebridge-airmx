@@ -10,7 +10,12 @@ import type {
 } from 'homebridge'
 
 import mqtt from 'mqtt'
-import { Airmx, type EagleStatusData, type EagleControlData, type EagleStatus } from 'airmx'
+import {
+  Airmx,
+  type EagleStatusData,
+  type EagleControlData,
+  type EagleStatus
+} from 'airmx'
 
 interface Device {
   id: number
@@ -24,7 +29,16 @@ interface AirmxPlatformConfig extends PlatformConfig {
 
 interface AccessoryContext {
   device: Device
-  status?: Pick<EagleStatusData, 'power' | 'mode' | 'cadr' | 'g4Percent' | 'carbonPercent' | 'hepaPercent' | 'version'>
+  status?: Pick<
+    EagleStatusData,
+    | 'power'
+    | 'mode'
+    | 'cadr'
+    | 'g4Percent'
+    | 'carbonPercent'
+    | 'hepaPercent'
+    | 'version'
+  >
 }
 
 enum EagleMode {
@@ -103,7 +117,10 @@ class AirmxPlatform implements DynamicPlatformPlugin {
 
   configureAccessory(accessory: PlatformAccessory): void {
     this.log.info('Loading accessory from cache:', accessory.context.device.id)
-    this.accessories.set(accessory.UUID, accessory as PlatformAccessory<AccessoryContext>)
+    this.accessories.set(
+      accessory.UUID,
+      accessory as PlatformAccessory<AccessoryContext>
+    )
   }
 
   private registerDevices() {
@@ -114,7 +131,10 @@ class AirmxPlatform implements DynamicPlatformPlugin {
       if (existingAccessory) {
         this.restoreAccessory(existingAccessory)
       } else {
-        const accessory = new this.api.platformAccessory<AccessoryContext>('AIRMX Pro', uuid)
+        const accessory = new this.api.platformAccessory<AccessoryContext>(
+          'AIRMX Pro',
+          uuid
+        )
         accessory.context.device = device
         this.registerAccessory(accessory)
       }
@@ -126,21 +146,32 @@ class AirmxPlatform implements DynamicPlatformPlugin {
   private cleanUpObsolete() {
     for (const [uuid, accessory] of this.accessories) {
       if (!this.discoveredUuids.includes(uuid)) {
-        this.api.unregisterPlatformAccessories(pluginIdentifier, platformName, [accessory])
+        this.api.unregisterPlatformAccessories(pluginIdentifier, platformName, [
+          accessory
+        ])
       }
     }
   }
 
-  private restoreAccessory(accessory: PlatformAccessory<AccessoryContext>): void {
-    this.log.info('Restoring existing accessory from cache:', accessory.context.device.id)
+  private restoreAccessory(
+    accessory: PlatformAccessory<AccessoryContext>
+  ): void {
+    this.log.info(
+      'Restoring existing accessory from cache:',
+      accessory.context.device.id
+    )
     new AirmxProAccessory(this, accessory)
   }
 
-  private registerAccessory(accessory: PlatformAccessory<AccessoryContext>): void {
+  private registerAccessory(
+    accessory: PlatformAccessory<AccessoryContext>
+  ): void {
     this.log.info('Adding new accessory:', accessory.context.device.id)
     this.accessories.set(accessory.UUID, accessory)
     new AirmxProAccessory(this, accessory)
-    this.api.registerPlatformAccessories(pluginIdentifier, platformName, [accessory])
+    this.api.registerPlatformAccessories(pluginIdentifier, platformName, [
+      accessory
+    ])
   }
 }
 
@@ -157,7 +188,10 @@ export class AirmxProAccessory {
   private registerAccessoryInformation() {
     const service = this.accessory
       .getService(this.platform.service.AccessoryInformation)!
-      .setCharacteristic(this.platform.characteristic.Manufacturer, 'Beijing Miaoxin technology Co., Ltd')
+      .setCharacteristic(
+        this.platform.characteristic.Manufacturer,
+        'Beijing Miaoxin technology Co., Ltd'
+      )
       .setCharacteristic(this.platform.characteristic.Model, 'AIRMX Pro')
       .setCharacteristic(this.platform.characteristic.SerialNumber, 'N/A')
 
@@ -247,7 +281,8 @@ export class AirmxProAccessory {
 
   handleTargetAirPurifierStateSet(value: CharacteristicValue) {
     const { status } = this.accessory.context
-    const isAuto = value === this.platform.characteristic.TargetAirPurifierState.AUTO
+    const isAuto =
+      value === this.platform.characteristic.TargetAirPurifierState.AUTO
 
     if (!status) {
       this.sendRawControl({
@@ -259,9 +294,7 @@ export class AirmxProAccessory {
 
     const device = this.platform.airmx.device(this.accessory.context.device.id)
 
-    isAuto
-      ? device.ai()
-      : device.cadr(status.cadr)
+    isAuto ? device.ai() : device.cadr(status.cadr)
   }
 
   handleRotationSpeedGet() {
@@ -281,9 +314,7 @@ export class AirmxProAccessory {
       return
     }
 
-    this.platform.airmx
-      .device(device.id)
-      .cadr(value as number)
+    this.platform.airmx.device(device.id).cadr(value as number)
   }
 
   handleFilterChangeIndicationGet() {

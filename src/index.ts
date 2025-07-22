@@ -115,12 +115,9 @@ class AirmxPlatform implements DynamicPlatformPlugin {
     })
   }
 
-  configureAccessory(accessory: PlatformAccessory): void {
+  configureAccessory(accessory: PlatformAccessory<AccessoryContext>): void {
     this.log.info('Loading accessory from cache:', accessory.context.device.id)
-    this.accessories.set(
-      accessory.UUID,
-      accessory as PlatformAccessory<AccessoryContext>
-    )
+    this.accessories.set(accessory.UUID, accessory)
   }
 
   private registerDevices() {

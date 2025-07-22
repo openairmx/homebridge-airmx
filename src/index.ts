@@ -97,6 +97,7 @@ class AirmxPlatform implements DynamicPlatformPlugin {
 
     this.api.on('didFinishLaunching', () => {
       this.registerDevices()
+      this.cleanUpObsolete()
     })
   }
 
@@ -111,32 +112,35 @@ class AirmxPlatform implements DynamicPlatformPlugin {
       const existingAccessory = this.accessories.get(uuid)
 
       if (existingAccessory) {
-        this.log.info('Restoring existing accessory from cache:', device.id)
-        new AirmxProAccessory(this, existingAccessory)
+        this.restoreAccessory(existingAccessory)
       } else {
-        this.log.info('Adding new accessory:', device.id)
-        const accessory = new this.api.platformAccessory<AccessoryContext>(
-          'AIRMX Pro',
-          uuid
-        )
+        const accessory = new this.api.platformAccessory<AccessoryContext>('AIRMX Pro', uuid)
         accessory.context.device = device
-        this.accessories.set(uuid, accessory)
-        new AirmxProAccessory(this, accessory)
-        this.api.registerPlatformAccessories(pluginIdentifier, platformName, [
-          accessory
-        ])
+        this.registerAccessory(accessory)
       }
 
       this.discoveredUuids.push(uuid)
     }
+  }
 
+  private cleanUpObsolete() {
     for (const [uuid, accessory] of this.accessories) {
       if (!this.discoveredUuids.includes(uuid)) {
-        this.api.unregisterPlatformAccessories(pluginIdentifier, platformName, [
-          accessory
-        ])
+        this.api.unregisterPlatformAccessories(pluginIdentifier, platformName, [accessory])
       }
     }
+  }
+
+  private restoreAccessory(accessory: PlatformAccessory<AccessoryContext>): void {
+    this.log.info('Restoring existing accessory from cache:', accessory.context.device.id)
+    new AirmxProAccessory(this, accessory)
+  }
+
+  private registerAccessory(accessory: PlatformAccessory<AccessoryContext>): void {
+    this.log.info('Adding new accessory:', accessory.context.device.id)
+    this.accessories.set(accessory.UUID, accessory)
+    new AirmxProAccessory(this, accessory)
+    this.api.registerPlatformAccessories(pluginIdentifier, platformName, [accessory])
   }
 }
 

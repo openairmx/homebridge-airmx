@@ -50,7 +50,7 @@ const pluginIdentifier = 'homebridge-airmx'
 const platformName = 'Airmx'
 
 /**
- * The stub control data for initial sending when we don’t have the latest
+ * The stub control data for initial sending when we don't have the latest
  * device status available.
  */
 const stubControl: EagleControlData = {
@@ -157,6 +157,10 @@ class AirmxPlatform implements DynamicPlatformPlugin {
       'Restoring existing accessory from cache:',
       accessory.context.device.id
     )
+
+    // The accessory has already been registered in the configureAccessory
+    // hook while restoring from cache. All we need to do is initialize
+    // the accessory instance and begin handling HomeKit requests.
     new AirmxProAccessory(this, accessory)
   }
 
@@ -164,8 +168,14 @@ class AirmxPlatform implements DynamicPlatformPlugin {
     accessory: PlatformAccessory<AccessoryContext>
   ): void {
     this.log.info('Adding new accessory:', accessory.context.device.id)
+
+    // When we "discover" a new device, we store the accessory in our accessory
+    // map. This allows us to notify HomeKit when we receive a status update
+    // from the device indicating that the device's status has changed.
     this.accessories.set(accessory.UUID, accessory)
+
     new AirmxProAccessory(this, accessory)
+
     this.api.registerPlatformAccessories(pluginIdentifier, platformName, [
       accessory
     ])

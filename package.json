@@ -1,0 +1,46 @@
+{
+  "name": "homebridge-airmx",
+  "displayName": "AIRMX",
+  "version": "1.0.0",
+  "description": "Homebridge plugin for AIRMX Pro.",
+  "keywords": [
+    "homebridge-plugin",
+    "airmx"
+  ],
+  "homepage": "https://github.com/openairmx/homebridge-airmx#readme",
+  "bugs": {
+    "url": "https://github.com/openairmx/homebridge-airmx/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/openairmx/homebridge-airmx.git"
+  },
+  "license": "MIT",
+  "author": "Zhineng Li",
+  "type": "module",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "config.schema.json"
+  ],
+  "engines": {
+    "node": "^18.20.4 || ^20.18.0 || ^22.10.0",
+    "homebridge": "^1.8.0 || ^2.0.0-beta.0"
+  },
+  "scripts": {
+    "start": "nodemon",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write --cache ."
+  },
+  "dependencies": {
+    "airmx": "^0.0.1",
+    "mqtt": "^5.13.3"
+  },
+  "devDependencies": {
+    "homebridge": "^2.0.0-beta.0",
+    "nodemon": "^3.1.10",
+    "prettier": "3.6.2",
+    "typescript": "^5.8.3"
+  }
+}

@@ -1,0 +1,4 @@
+node_modules/
+dist/
+test/homebridge/
+package-lock.json

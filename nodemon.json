@@ -1,0 +1,8 @@
+{
+  "watch": [
+    "src"
+  ],
+  "ext": "ts",
+  "exec": "npm run build && homebridge -U ./test/homebridge -D",
+  "signal": "SIGTERM"
+}

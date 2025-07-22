@@ -1,0 +1,38 @@
+{
+  "pluginAlias": "Airmx",
+  "pluginType": "platform",
+  "singular": true,
+  "schema": {
+    "type": "object",
+    "properties": {
+      "mqtt": {
+        "title": "MQTT Broker URL",
+        "type": "string",
+        "placeholder": "mqtt://192.168.10.10",
+        "required": true
+      },
+      "devices": {
+        "title": "Devices",
+        "type": "array",
+        "items": {
+          "title": "Device",
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "ID",
+              "type": "number",
+              "placeholder": "12345",
+              "required": true
+            },
+            "key": {
+              "title": "Key",
+              "type": "string",
+              "placeholder": "XOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXO",
+              "required": true
+            }
+          }
+        }
+      }
+    }
+  }
+}
